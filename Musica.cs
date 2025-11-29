@@ -15,7 +15,7 @@
             Artista = artista;
             Genero = genero;
             Duracao = duracao;
-            Chave = $"{titulo} {artista}";
+            Chave = $"{titulo} - {artista}";
         }
     }
 }

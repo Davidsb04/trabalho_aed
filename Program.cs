@@ -5,15 +5,16 @@ namespace PlayerMusical
 
 	internal class Program
 	{
+		static Dictionary<string, Musica> Catalogo = new Dictionary<string, Musica>();
 		static void Main(string[] args)
 		{
-			Dictionary<string, Musica> catalogo = InicialiazarDadosCSV();			
+			InicialiazarDadosCSV();			
 
 			bool executando = true;
 
 			while (executando)
 			{
-				Console.Clear();
+				//Console.Clear();
 				Console.WriteLine("===== MENU PRINCIPAL =====");
 				Console.WriteLine("1 - Gerenciar Catálogo");
 				Console.WriteLine("2 - Criar Playlist");
@@ -60,19 +61,40 @@ namespace PlayerMusical
 
 			while (loop)
 			{
-				Console.Clear();
+				//Console.Clear();
 				Console.WriteLine("===== GERENCIAR CATÁLOGO =====");
 				Console.WriteLine("1 - Exibir Catálogo");
 				Console.WriteLine("2 - Buscar Música");
-				Console.WriteLine("3 - Carregar CSV Inicial");
-				Console.WriteLine("4 - Inserir Música");
-				Console.WriteLine("5 - Remover Música");
 				Console.WriteLine("0 - Voltar");
 				Console.Write("Opção: ");
 
-				string opcao = Console.ReadLine();
+				int opcao = int.Parse(Console.ReadLine());
 
-				if (opcao == "0") loop = false;
+				switch (opcao)
+				{
+					case 1:
+						foreach (string chave in Catalogo.Keys)
+							Console.WriteLine(chave);
+						break;
+
+					case 2:
+						Console.Write("Digite o nome da música: ");
+						string musicaBusca = Console.ReadLine();
+
+						if (Catalogo.TryGetValue(musicaBusca, out Musica musica))
+                            MenuMusicaEncontrada();
+                        else
+                            Console.WriteLine("Nenhuma referência encontrada.");
+                        break;
+					case 0:
+						loop = false;
+							break;
+
+					default:
+						Console.WriteLine("Essa opção não existe.");
+						
+						 break;
+				}
 			}
 		}
 
@@ -136,9 +158,13 @@ namespace PlayerMusical
 			}
 		}
 
-		static Dictionary<string, Musica> InicialiazarDadosCSV()
+		static void MenuMusicaEncontrada()
 		{
-            Dictionary<string, Musica> catalogo = new Dictionary<string, Musica>();
+
+		}
+
+		static void InicialiazarDadosCSV()
+		{
             string linha;
 
 			try
@@ -153,19 +179,16 @@ namespace PlayerMusical
                     linha = linha.Replace("\"", "");
                     string[] coluna = linha.Split(';');
 					Musica musica = new Musica(coluna[0], coluna[1], coluna[2], int.Parse(coluna[3]));
-					catalogo.Add(musica.Chave, musica);
+					Catalogo.Add(musica.Chave, musica);
 
 					linha = arq.ReadLine();
 				}
 
 				arq.Close();
-
-                return catalogo;
 			}
 			catch (Exception e)
 			{
 				Console.WriteLine("Exception: " + e.Message);
-				return null;
 			}			
         }
 
