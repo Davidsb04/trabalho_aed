@@ -1,0 +1,15 @@
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.db
+*.log
+*.tmp
+*.exe
+*.dll
+*.pdb
+*.mdb
+*.cache
+*.json.user
