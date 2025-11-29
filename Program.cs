@@ -1,9 +1,14 @@
-﻿namespace PlayerMusical
+﻿using System.Text;
+
+namespace PlayerMusical
 {
+
 	internal class Program
 	{
 		static void Main(string[] args)
 		{
+			Dictionary<string, Musica> catalogo = InicialiazarDadosCSV();			
+
 			bool executando = true;
 
 			while (executando)
@@ -130,5 +135,39 @@
 				if (opcao == "0") loop = false;
 			}
 		}
+
+		static Dictionary<string, Musica> InicialiazarDadosCSV()
+		{
+            Dictionary<string, Musica> catalogo = new Dictionary<string, Musica>();
+            string linha;
+
+			try
+			{
+				StreamReader arq = new StreamReader("músicas.csv", Encoding.Latin1);
+
+				linha = arq.ReadLine();
+
+				while (linha != null)
+				{
+					linha = arq.ReadLine();
+                    linha = linha.Replace("\"", "");
+                    string[] coluna = linha.Split(';');
+					Musica musica = new Musica(coluna[0], coluna[1], coluna[2], int.Parse(coluna[3]));
+					catalogo.Add(musica.Chave, musica);
+
+					linha = arq.ReadLine();
+				}
+
+				arq.Close();
+
+                return catalogo;
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("Exception: " + e.Message);
+				return null;
+			}			
+        }
+
 	}
 }

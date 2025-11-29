@@ -1,26 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PlayerMusical
+﻿namespace PlayerMusical
 {
     internal class Musica
-    {
-        private string titulo;
-        private string artista;
-        private string genero;
-        private int duracao;
-        private string chave;
+    {        
+        public string Titulo { get; set; }
+        public string Artista { get; set; }
+        public string Genero { get; set; }
+        public int Duracao { get; set; }
+
+        public string Chave {  get; set; }
 
         public Musica(string titulo, string artista, string genero, int duracao)
         {
-            this.titulo = titulo;
-            this.artista = artista;
-            this.genero = genero;
-            this.duracao = duracao;
-            chave = titulo + artista;
+            Titulo = titulo;
+            Artista = artista;
+            Genero = genero;
+            Duracao = duracao;
+            Chave = $"{titulo} {artista}";
         }
     }
 }
