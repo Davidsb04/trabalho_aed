@@ -17,5 +17,11 @@ namespace PlayerMusical
             playlist = new ListaDupla();
         }
 
+        public string Nome
+        {
+            get {  return nome; }
+            set { this.nome = value; }
+        }
+
     }
 }

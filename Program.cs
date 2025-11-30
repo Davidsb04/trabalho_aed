@@ -6,6 +6,7 @@ namespace PlayerMusical
 	internal class Program
 	{
 		static Dictionary<string, Musica> Catalogo = new Dictionary<string, Musica>();
+		static List<Playlist> ListaPlaylists = new List<Playlist>();
 		static void Main(string[] args)
 		{
 			InicialiazarDadosCSV();			
@@ -104,7 +105,6 @@ namespace PlayerMusical
 
 			while (loop)
 			{
-				Console.Clear();
 				Console.WriteLine("===== PLAYLISTS =====");
 				Console.WriteLine("1 - Criar Playlist");
 				Console.WriteLine("2 - Selecionar Playlist");
@@ -112,9 +112,41 @@ namespace PlayerMusical
 				Console.WriteLine("0 - Voltar");
 				Console.Write("Opção: ");
 
-				string opcao = Console.ReadLine();
+				int opcao = int.Parse(Console.ReadLine());
 
-				if (opcao == "0") loop = false;
+				switch (opcao)
+				{
+					case 1:
+						Console.Write("Digite o nome da playlist: ");
+						string nomePlaylist = Console.ReadLine();
+
+						Playlist playlist = new Playlist(nomePlaylist);
+
+						ListaPlaylists.Add(playlist);
+						break;
+
+					case 2:
+                        Console.Write("Digite o nome da playlist: ");
+						string playlistSelecionada = Console.ReadLine();
+
+						if (!ListaPlaylists.Any(p => p.Nome == playlistSelecionada))
+							Console.WriteLine("Essa playlist não existe.");
+						else
+							MenuListaSelecionada();
+							break;
+
+					case 3:
+						if(ListaPlaylists.Count == 0)
+							Console.WriteLine("Nenhuma playlist encontrada.");
+						else
+						{
+							foreach (Playlist item in ListaPlaylists)
+							{
+								Console.WriteLine(item.Nome);
+							}
+						}
+						break;
+				}
 			}
 		}
 
@@ -159,6 +191,11 @@ namespace PlayerMusical
 		}
 
 		static void MenuMusicaEncontrada()
+		{
+
+		}
+
+		static void MenuListaSelecionada()
 		{
 
 		}
