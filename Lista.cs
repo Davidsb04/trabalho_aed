@@ -8,7 +8,7 @@ namespace PlayerMusical
 {
 	class Lista
 	{
-		public Celula primeiro, ultimo;
+		private Celula primeiro, ultimo;
 
 		public Lista()
 		{

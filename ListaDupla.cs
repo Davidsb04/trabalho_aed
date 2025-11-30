@@ -42,7 +42,83 @@ namespace PlayerMusical
 			ultimo = ultimo.Prox;
 		}
 
-		public Musica RemoverInicio()
+		public int BuscarPosicao(Musica musica)
+		{
+			int pos = 0;
+			for (CelulaDupla i = primeiro.Prox; i != null; i = i.Prox)
+			{
+				if (i.Musica == musica)
+					return pos;
+
+				pos++;
+			}
+			return -1;
+		}
+
+		public bool BuscarMusica(string nome)
+		{
+			for (CelulaDupla i = primeiro.Prox; i != null; i = i.Prox)
+			{
+				if (i.Musica.Chave == nome)
+				{
+                    return true;
+                }					
+			}
+			return false;
+		}
+
+		public void MoverCima(Musica musica)
+		{
+            for (CelulaDupla i = primeiro.Prox; i != null; i = i.Prox)
+            {
+                if (i.Musica == musica)
+				{
+					if(i.Ant == primeiro)
+						return;
+					CelulaDupla a = i.Ant;
+					CelulaDupla aa = i.Ant.Ant; 
+					CelulaDupla p = i.Prox;
+
+					aa.Prox = i;
+					i.Ant = aa;
+					i.Prox = a;
+					a.Ant = i;
+					a.Prox = p;
+					if (p != null)
+						p.Ant = a;					
+				}
+            }
+        }
+
+        public void MoverBaixo(Musica musica)
+        {
+            for (CelulaDupla i = primeiro.Prox; i != null; i = i.Prox)
+            {
+                if (i.Musica == musica)
+                {
+                    if (i == ultimo)
+                        return;
+					
+                    CelulaDupla p = i.Prox;
+                    CelulaDupla a = i.Ant;
+                    CelulaDupla pp = i.Prox.Prox;
+
+					a.Prox = p;
+                    p.Ant = a;
+                    p.Prox = i;
+					i.Ant = p;
+                    i.Prox = pp;
+					
+					if(pp != null)
+						pp.Ant = i;
+					else
+						ultimo = i;
+                }
+            }
+        }
+
+
+        public Musica RemoverInicio()
 		{
 			if (primeiro == ultimo)
 			{
@@ -149,12 +225,12 @@ namespace PlayerMusical
 
 		public void Mostrar()
 		{
-			Console.Write("[");
+			Console.Write("[ ");
 			for (CelulaDupla i = primeiro.Prox; i != null; i = i.Prox)
 			{
-				Console.Write(i.Musica + " ");
+				Console.Write($"{i.Musica.Titulo} - {i.Musica.Artista} | ");
 			}
-			Console.WriteLine("]");
+			Console.WriteLine(" ]");
 		}
 
 	}

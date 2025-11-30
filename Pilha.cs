@@ -8,7 +8,7 @@ namespace PlayerMusical
 {
 	class Pilha
 	{
-		public Celula topo;
+		private Celula topo;
 
 		public Pilha()
 		{

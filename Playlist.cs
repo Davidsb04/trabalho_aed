@@ -27,5 +27,34 @@ namespace PlayerMusical
         {
             playlist.InserirFim(musica);
         }
+
+        public void ExibirMusicas()
+        {
+            playlist.Mostrar();
+        }
+
+        public void RemoverMusica(Musica musica)
+        {
+            int pos = playlist.BuscarPosicao(musica);
+            playlist.Remover(pos);
+        }
+
+
+        public bool BuscarMusica(string nomeMusica)
+        {
+            if(playlist.BuscarMusica(nomeMusica))
+                return true;
+            return false;
+        }
+
+        public void MoverMusicaCima(Musica musica)
+        {
+            playlist.MoverCima(musica);
+        }
+
+        public void MoverMusicaBaixo(Musica musica)
+        {
+            playlist.MoverBaixo(musica);
+        }
     }
 }

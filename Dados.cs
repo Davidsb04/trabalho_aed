@@ -1,4 +1,5 @@
 ﻿
+using System.Numerics;
 using System.Text;
 
 namespace PlayerMusical
@@ -95,11 +96,62 @@ namespace PlayerMusical
                 Playlist playlistSelecionada = RetornarPlaylist(nomePlaylist);
                 playlistSelecionada.InserirMusica(musica);
 
+                Console.WriteLine("Música inserida com sucesso.");
             }
             else
             {
                 Console.WriteLine("Música não encontrada.");
             }
+        }
+
+        public static void ExibirMusicasPlaylist(string nomePlaylist)
+        {
+            Playlist playlist = RetornarPlaylist(nomePlaylist);
+            playlist.ExibirMusicas();
+        }
+
+        public static void RemoverMusicaPlaylist(string nomePlaylist, string nomeMusica)
+        {
+            if (BuscarMusica(nomeMusica, out Musica musica))
+            {
+                Playlist playlist = ListaPlaylists.FirstOrDefault(p => p.Nome == nomePlaylist);
+                playlist.RemoverMusica(musica);
+
+                Console.WriteLine("Música removida com sucesso.");
+            }
+            else
+                Console.WriteLine("Música não encontrada.");
+        }
+
+        public static bool BuscarMusicaPlaylist(string nomePlaylist, string nomeMusica)
+        {
+            if (BuscarMusica(nomeMusica, out Musica musica))
+            {
+                Playlist playlist = ListaPlaylists.FirstOrDefault(p => p.Nome == nomePlaylist);
+                return playlist.BuscarMusica(nomeMusica);
+            }
+            return false;
+        }
+
+        public static void MoverMusicaPlaylist(string nomePlaylist, string nomeMusica, string direcao)
+        {
+            if (BuscarMusica(nomeMusica, out Musica musica))
+            {
+                Playlist playlist = ListaPlaylists.FirstOrDefault(p => p.Nome == nomePlaylist);
+                if (direcao == "Cima")
+                {
+                    playlist.MoverMusicaCima(musica);
+                }
+                else
+                {
+                    playlist.MoverMusicaBaixo(musica);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Música não encontrada.");
+            }
+
         }
     }
 

@@ -8,9 +8,9 @@ namespace PlayerMusical
 {
 	class CelulaDupla
 	{
-		public Musica musica;
-		public CelulaDupla prox;
-		public CelulaDupla ant;
+		private Musica musica;
+		private CelulaDupla prox;
+		private CelulaDupla ant;
 
 		public CelulaDupla(Musica musica)
 		{

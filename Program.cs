@@ -182,13 +182,21 @@ namespace PlayerMusical
 
 		static void MenuMusicaEncontrada(string nomeMusica, Musica musica)
 		{
-            Console.WriteLine($"===== {nomeMusica} =====");
-            Console.WriteLine("1 - Exibir Últimas Músicas Tocadas");
-            Console.WriteLine("2 - Voltar uma Música");
-            Console.WriteLine("0 - Voltar");
-            Console.Write("Opção: ");
+            bool loop = true;
 
-            int opcao = int.Parse(Console.ReadLine());
+			while (loop)
+			{
+				Console.WriteLine($"===== {nomeMusica} =====");
+				Console.WriteLine("1 - Reproduzir");
+				Console.WriteLine("2 - Adicionar a uma playlist");
+				Console.WriteLine("0 - Voltar");
+				Console.Write("Opção: ");
+
+				int opcao = int.Parse(Console.ReadLine());
+
+			
+			}
+
         }
 
 		static void MenuPlaylistSelecionada(string nomePlaylist)
@@ -200,8 +208,9 @@ namespace PlayerMusical
                 Console.WriteLine($"===== PLAYLIST {nomePlaylist.ToUpper()} =====");
                 Console.WriteLine("1 - Reproduzir");
                 Console.WriteLine("2 - Adicionar Música");
-                Console.WriteLine("3 - Buscar Música");
-                Console.WriteLine("4 - Remover Música");
+                Console.WriteLine("3 - Exibir Músicas");
+                Console.WriteLine("4 - Buscar Música");
+                Console.WriteLine("5 - Remover Música");
                 Console.WriteLine("0 - Voltar");
                 Console.Write("Opção: ");
 
@@ -213,10 +222,46 @@ namespace PlayerMusical
 						break;
 					case 2:
 						Console.Write("Digite o nome da música: ");
-						string nomeMusica = Console.ReadLine();
+						string nomeMusicaInserir = Console.ReadLine();
 
-						Dados.InserirMusicaPlaylist(nomePlaylist, nomeMusica);
+						Dados.InserirMusicaPlaylist(nomePlaylist, nomeMusicaInserir);
 						break;
+					case 3:
+						Dados.ExibirMusicasPlaylist(nomePlaylist);
+						break;
+					case 4:
+						Console.Write("Digite o nome da música: ");
+						string nomeMusicaBuscar = Console.ReadLine();
+						if (Dados.BuscarMusicaPlaylist(nomePlaylist, nomeMusicaBuscar))
+						{
+                            Console.WriteLine($"===== MÚSICA {nomeMusicaBuscar.ToUpper()} =====");
+                            Console.WriteLine("1 - Mover para cima");
+                            Console.WriteLine("2 - Mover para baixo");
+                            Console.Write("Opção: ");
+
+							int opcaoMusica = int.Parse(Console.ReadLine());
+
+							switch (opcaoMusica)
+							{
+								case 1:
+									Dados.MoverMusicaPlaylist(nomePlaylist, nomeMusicaBuscar, "Cima");
+									break;
+								case 2:
+									Dados.MoverMusicaPlaylist(nomePlaylist, nomeMusicaBuscar, "Baixo");
+									break;
+								default:
+									Console.WriteLine("Opção inválida.");
+									break;
+							}
+                        }
+						break;
+
+					case 5:
+                        Console.Write("Digite o nome da música: ");
+                        string nomeMusicaRemover = Console.ReadLine();
+
+						Dados.RemoverMusicaPlaylist(nomePlaylist, nomeMusicaRemover);
+                        break;
 					case 0:
 						loop = false;
 						break;

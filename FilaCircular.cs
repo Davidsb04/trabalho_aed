@@ -8,9 +8,9 @@ namespace PlayerMusical
 {
 	class Fila
 	{
-		public string[] array;
-		public int primeiro;
-		public int ultimo;
+		private string[] array;
+		private int primeiro;
+		private int ultimo;
 
 		public Fila(int tamanho)
 		{
