@@ -8,28 +8,28 @@ namespace PlayerMusical
 {
 	class CelulaDupla
 	{
-		public int elemento;
+		public Musica musica;
 		public CelulaDupla prox;
 		public CelulaDupla ant;
 
-		public CelulaDupla(int elemento)
+		public CelulaDupla(Musica musica)
 		{
-			this.elemento = elemento;
+			this.musica = musica;
 			prox = null;
 			ant = null;
 		}
 
 		public CelulaDupla()
 		{
-			elemento = 0;
+			musica = null;
 			prox = null;
 			ant = null;
 		}
 
-		public int Elemento
+		public Musica Musica
 		{
-			get { return elemento; }
-			set { elemento = value; }
+			get { return musica; }
+			set { musica = value; }
 		}
 
 		public CelulaDupla Prox

@@ -16,7 +16,7 @@ namespace PlayerMusical
 			ultimo = primeiro;
 		}
 
-		public void InserirInicio(int x)
+		public void InserirInicio(Musica x)
 		{
 			CelulaDupla temp = new CelulaDupla(x);
 			temp.Ant = primeiro;
@@ -34,7 +34,7 @@ namespace PlayerMusical
 			temp = null;
 		}
 
-		public void InserirFim(int x)
+		public void InserirFim(Musica x)
 		{
 
 			ultimo.Prox = new CelulaDupla(x);
@@ -42,7 +42,7 @@ namespace PlayerMusical
 			ultimo = ultimo.Prox;
 		}
 
-		public int RemoverInicio()
+		public Musica RemoverInicio()
 		{
 			if (primeiro == ultimo)
 			{
@@ -51,27 +51,27 @@ namespace PlayerMusical
 
 			CelulaDupla temp = primeiro;
 			primeiro = primeiro.Prox;
-			int elemento = primeiro.Elemento;
+			Musica musica = primeiro.Musica;
 			temp.Prox = primeiro.Ant = null;
 			temp = null;
-			return elemento;
+			return musica;
 		}
 
-		public int RemoverFim()
+		public Musica RemoverFim()
 		{
 			if (primeiro == ultimo)
 			{
 				throw new Exception("Lista cheia");
 			}
-			int elemento = ultimo.Elemento;
+			Musica musica = ultimo.Musica;
 			ultimo = ultimo.Ant;
 			ultimo.Prox.Ant = null;
 			ultimo.Prox = null;
-			return elemento;
+			return musica;
 
 		}
 
-		public void Inserir(int x, int pos)
+		public void Inserir(Musica x, int pos)
 		{
 			int tamanho = Tamanho();
 			if (pos < 0 || pos > tamanho)
@@ -100,9 +100,10 @@ namespace PlayerMusical
 			}
 		}
 
-		public int Remover(int pos)
+		public Musica Remover(int pos)
 		{
-			int elemento, tamanho = Tamanho();
+			Musica musica;
+			int tamanho = Tamanho();
 			if (primeiro == ultimo)
 			{
 				throw new Exception("Erro!");
@@ -113,17 +114,17 @@ namespace PlayerMusical
 			}
 			else if (pos == 0)
 			{
-				elemento = RemoverInicio();
+                musica = RemoverInicio();
 			}
 			else if (pos == tamanho - 1)
 			{
-				elemento = RemoverFim();
+                musica = RemoverFim();
 			}
 			else
 			{
 				CelulaDupla i = primeiro;
 				for (int j = 0; j < pos; j++, i = i.Prox) ;
-				elemento = i.Prox.Elemento;
+                musica = i.Prox.Musica;
 				i.Ant.Prox = i.Prox;
 				i.Prox.Ant = i.Ant;
 				i.Prox = null;
@@ -131,7 +132,7 @@ namespace PlayerMusical
 				i = null;
 			}
 
-			return elemento;
+			return musica;
 		}
 
 		public int Tamanho()
@@ -151,7 +152,7 @@ namespace PlayerMusical
 			Console.Write("[");
 			for (CelulaDupla i = primeiro.Prox; i != null; i = i.Prox)
 			{
-				Console.Write(i.Elemento + " ");
+				Console.Write(i.Musica + " ");
 			}
 			Console.WriteLine("]");
 		}

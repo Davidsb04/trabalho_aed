@@ -23,5 +23,9 @@ namespace PlayerMusical
             set { this.nome = value; }
         }
 
+        public void InserirMusica(Musica musica)
+        {
+            playlist.InserirFim(musica);
+        }
     }
 }

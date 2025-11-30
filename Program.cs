@@ -5,11 +5,9 @@ namespace PlayerMusical
 
 	internal class Program
 	{
-		static Dictionary<string, Musica> Catalogo = new Dictionary<string, Musica>();
-		static List<Playlist> ListaPlaylists = new List<Playlist>();
 		static void Main(string[] args)
 		{
-			InicialiazarDadosCSV();			
+			Dados.InicialiazarDadosCSV();	
 
 			bool executando = true;
 
@@ -18,7 +16,7 @@ namespace PlayerMusical
 				//Console.Clear();
 				Console.WriteLine("===== MENU PRINCIPAL =====");
 				Console.WriteLine("1 - Gerenciar Catálogo");
-				Console.WriteLine("2 - Criar Playlist");
+				Console.WriteLine("2 - Gerenciar Playlists");
 				Console.WriteLine("3 - Reproduzir");
 				Console.WriteLine("4 - Ver Histórico");
 				Console.WriteLine("0 - Sair");
@@ -74,16 +72,15 @@ namespace PlayerMusical
 				switch (opcao)
 				{
 					case 1:
-						foreach (string chave in Catalogo.Keys)
-							Console.WriteLine(chave);
+						Dados.ExibirCatalogo();
 						break;
 
 					case 2:
 						Console.Write("Digite o nome da música: ");
 						string musicaBusca = Console.ReadLine();
 
-						if (Catalogo.TryGetValue(musicaBusca, out Musica musica))
-                            MenuMusicaEncontrada();
+						if (Dados.BuscarMusica(musicaBusca, out Musica musica))
+                            MenuMusicaEncontrada(musicaBusca, musica);
                         else
                             Console.WriteLine("Nenhuma referência encontrada.");
                         break;
@@ -120,31 +117,24 @@ namespace PlayerMusical
 						Console.Write("Digite o nome da playlist: ");
 						string nomePlaylist = Console.ReadLine();
 
-						Playlist playlist = new Playlist(nomePlaylist);
-
-						ListaPlaylists.Add(playlist);
+						Dados.CriarPlaylist(nomePlaylist);
 						break;
 
 					case 2:
                         Console.Write("Digite o nome da playlist: ");
 						string playlistSelecionada = Console.ReadLine();
 
-						if (!ListaPlaylists.Any(p => p.Nome == playlistSelecionada))
-							Console.WriteLine("Essa playlist não existe.");
+						if (Dados.BuscarPlaylist(playlistSelecionada))
+                            MenuPlaylistSelecionada(playlistSelecionada);
 						else
-							MenuListaSelecionada();
-							break;
+							Console.WriteLine("Essa playlist não existe.");							
+						break;
 
 					case 3:
-						if(ListaPlaylists.Count == 0)
-							Console.WriteLine("Nenhuma playlist encontrada.");
-						else
-						{
-							foreach (Playlist item in ListaPlaylists)
-							{
-								Console.WriteLine(item.Nome);
-							}
-						}
+						Dados.ExibirPlaylists();
+						break;
+					case 0:
+						loop = false;
 						break;
 				}
 			}
@@ -190,44 +180,49 @@ namespace PlayerMusical
 			}
 		}
 
-		static void MenuMusicaEncontrada()
+		static void MenuMusicaEncontrada(string nomeMusica, Musica musica)
 		{
+            Console.WriteLine($"===== {nomeMusica} =====");
+            Console.WriteLine("1 - Exibir Últimas Músicas Tocadas");
+            Console.WriteLine("2 - Voltar uma Música");
+            Console.WriteLine("0 - Voltar");
+            Console.Write("Opção: ");
 
-		}
-
-		static void MenuListaSelecionada()
-		{
-
-		}
-
-		static void InicialiazarDadosCSV()
-		{
-            string linha;
-
-			try
-			{
-				StreamReader arq = new StreamReader("músicas.csv", Encoding.Latin1);
-
-				linha = arq.ReadLine();
-
-				while (linha != null)
-				{
-					linha = arq.ReadLine();
-                    linha = linha.Replace("\"", "");
-                    string[] coluna = linha.Split(';');
-					Musica musica = new Musica(coluna[0], coluna[1], coluna[2], int.Parse(coluna[3]));
-					Catalogo.Add(musica.Chave, musica);
-
-					linha = arq.ReadLine();
-				}
-
-				arq.Close();
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine("Exception: " + e.Message);
-			}			
+            int opcao = int.Parse(Console.ReadLine());
         }
+
+		static void MenuPlaylistSelecionada(string nomePlaylist)
+		{
+            bool loop = true;
+
+            while (loop)
+            {
+                Console.WriteLine($"===== PLAYLIST {nomePlaylist.ToUpper()} =====");
+                Console.WriteLine("1 - Reproduzir");
+                Console.WriteLine("2 - Adicionar Música");
+                Console.WriteLine("3 - Buscar Música");
+                Console.WriteLine("4 - Remover Música");
+                Console.WriteLine("0 - Voltar");
+                Console.Write("Opção: ");
+
+                int opcao = int.Parse(Console.ReadLine());
+
+				switch (opcao)
+				{
+					case 1:
+						break;
+					case 2:
+						Console.Write("Digite o nome da música: ");
+						string nomeMusica = Console.ReadLine();
+
+						Dados.InserirMusicaPlaylist(nomePlaylist, nomeMusica);
+						break;
+					case 0:
+						loop = false;
+						break;
+				}
+			}
+		}		
 
 	}
 }
