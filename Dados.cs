@@ -94,8 +94,13 @@ namespace PlayerMusical
             if (BuscarMusica(nomeMusica, out Musica musica))
             {
                 Playlist playlistSelecionada = RetornarPlaylist(nomePlaylist);
-                playlistSelecionada.InserirMusica(musica);
-
+                if (playlistSelecionada != null)                
+                    playlistSelecionada.InserirMusica(musica);
+                else
+                {
+                    Console.WriteLine("Essa playlist não existe.");
+                    return;
+                }
                 Console.WriteLine("Música inserida com sucesso.");
             }
             else
@@ -151,9 +156,6 @@ namespace PlayerMusical
             {
                 Console.WriteLine("Música não encontrada.");
             }
-
-        }
+        }        
     }
-
-
 }

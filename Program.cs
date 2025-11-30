@@ -194,10 +194,28 @@ namespace PlayerMusical
 
 				int opcao = int.Parse(Console.ReadLine());
 
-			
+				switch (opcao)
+				{
+					case 1:
+
+						break;
+					case 2:
+						Console.Write("Digite o nome da playlist: ");
+						string playlistSelecionada = Console.ReadLine();
+
+						Dados.InserirMusicaPlaylist(playlistSelecionada, nomeMusica);
+						break;
+					case 0:
+						loop = false;
+						break;
+					default:
+						Console.WriteLine("Opção inexistente.");
+						break;
+
+				}
 			}
 
-        }
+		}
 
 		static void MenuPlaylistSelecionada(string nomePlaylist)
 		{
