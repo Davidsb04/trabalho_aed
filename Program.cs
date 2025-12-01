@@ -7,9 +7,12 @@ namespace PlayerMusical
 	{
 		static void Main(string[] args)
 		{
-			Dados.InicialiazarDadosCSV();	
+			Dados.InicialiazarDadosCSV();
+			Dados.InserirMusicasArvore();
 
-			bool executando = true;
+
+
+            bool executando = true;
 
 			while (executando)
 			{
@@ -17,7 +20,7 @@ namespace PlayerMusical
 				Console.WriteLine("===== MENU PRINCIPAL =====");
 				Console.WriteLine("1 - Gerenciar Catálogo");
 				Console.WriteLine("2 - Gerenciar Playlists");
-				Console.WriteLine("3 - Reproduzir");
+                Console.WriteLine("3 - Reproduzir");
 				Console.WriteLine("4 - Ver Histórico");
 				Console.WriteLine("0 - Sair");
 				Console.Write("Opção: ");
@@ -64,7 +67,8 @@ namespace PlayerMusical
 				Console.WriteLine("===== GERENCIAR CATÁLOGO =====");
 				Console.WriteLine("1 - Exibir Catálogo");
 				Console.WriteLine("2 - Buscar Música");
-				Console.WriteLine("0 - Voltar");
+                Console.WriteLine("3 - Buscar Músicas por Gênero");
+                Console.WriteLine("0 - Voltar");
 				Console.Write("Opção: ");
 
 				int opcao = int.Parse(Console.ReadLine());
@@ -83,6 +87,12 @@ namespace PlayerMusical
                             MenuMusicaEncontrada(musicaBusca, musica);
                         else
                             Console.WriteLine("Nenhuma referência encontrada.");
+                        break;
+					case 3:
+                        Console.Write("Digite o gênero: ");
+                        string generoBusca = Console.ReadLine();
+
+						Dados.PesquisarPorGenero(generoBusca);
                         break;
 					case 0:
 						loop = false;

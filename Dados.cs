@@ -8,6 +8,7 @@ namespace PlayerMusical
     {
         public static Dictionary<string, Musica> Catalogo = new Dictionary<string, Musica>();
         public static List<Playlist> ListaPlaylists = new List<Playlist>();
+        public static ArvoreBinaria ArvoreGeneros = new ArvoreBinaria();
 
         public static void InicialiazarDadosCSV()
         {
@@ -46,7 +47,7 @@ namespace PlayerMusical
 
         public static bool BuscarMusica(string chave, out Musica musica)
         {
-            if(Catalogo.TryGetValue(chave, out musica))
+            if (Catalogo.TryGetValue(chave, out musica))
                 return true;
             return false;
         }
@@ -60,7 +61,7 @@ namespace PlayerMusical
                 ListaPlaylists.Add(playlist);
             }
             else
-                Console.WriteLine("Essa playlist já existe.");                
+                Console.WriteLine("Essa playlist já existe.");
         }
 
         public static bool BuscarPlaylist(string nomePlaylist)
@@ -94,7 +95,7 @@ namespace PlayerMusical
             if (BuscarMusica(nomeMusica, out Musica musica))
             {
                 Playlist playlistSelecionada = RetornarPlaylist(nomePlaylist);
-                if (playlistSelecionada != null)                
+                if (playlistSelecionada != null)
                     playlistSelecionada.InserirMusica(musica);
                 else
                 {
@@ -156,6 +157,24 @@ namespace PlayerMusical
             {
                 Console.WriteLine("Música não encontrada.");
             }
-        }        
+        }
+
+        public static void PesquisarPorGenero(string genero)
+        {
+            List<Musica> musicasPorGenero = ArvoreGeneros.Pesquisar(genero);
+
+            foreach (Musica musica in musicasPorGenero)
+            {
+                Console.WriteLine($"{musica.Titulo} - {musica.Artista}");
+            }
+        }
+
+        public static void InserirMusicasArvore()
+        {
+            foreach (var musica in Catalogo.Values)
+            {
+                ArvoreGeneros.Inserir(musica);
+            }
+        }
     }
 }
