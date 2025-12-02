@@ -9,6 +9,7 @@ namespace PlayerMusical
         public static Dictionary<string, Musica> Catalogo = new Dictionary<string, Musica>();
         public static List<Playlist> ListaPlaylists = new List<Playlist>();
         public static ArvoreBinaria ArvoreGeneros = new ArvoreBinaria();
+        public static Musica[] MusicaParaBusca = new Musica[Catalogo.Count];
 
         public static void InicialiazarDadosCSV()
         {
@@ -175,6 +176,89 @@ namespace PlayerMusical
             {
                 ArvoreGeneros.Inserir(musica);
             }
+        }
+        public static void PreencherVetorMusicas()
+        {
+            MusicaParaBusca = Catalogo.Values.ToArray();
+        }
+
+        public static void OrdenarMusica(string parametro)
+        {
+            if (parametro == "Duracao")
+            {
+                OrdenarMusicasDuracao(MusicaParaBusca, 0, MusicaParaBusca.Length - 1);
+                foreach (Musica musica in MusicaParaBusca)
+                {
+                    Console.WriteLine($"{musica.Titulo} - {musica.Artista} - {musica.Duracao}");
+                }
+            }
+            else
+            {
+                OrdenarMusicasTitulo(MusicaParaBusca, 0, MusicaParaBusca.Length - 1);
+                foreach (Musica musica in MusicaParaBusca)
+                {
+                    Console.WriteLine($"{musica.Titulo} - {musica.Artista}");
+                }
+
+            }
+        }
+
+        private static void OrdenarMusicasTitulo(Musica[] array, int esq, int dir)
+        {
+            int i = esq, j = dir;
+            string pivo = array[(esq + dir) / 2].Titulo;
+
+            while (i <= j)
+            {
+                while (array[i].Titulo.CompareTo(pivo) < 0)
+                    i++;
+
+                while (array[j].Titulo.CompareTo(pivo) > 0)
+                    j--;
+
+                if (i <= j)
+                {
+                    Musica temp = array[i];
+                    array[i] = array[j];
+                    array[j] = temp;
+
+                    i++;
+                    j--;
+                }
+            }
+
+            if (esq < j)
+                OrdenarMusicasTitulo(array, esq, j);
+
+            if (i < dir)
+                OrdenarMusicasTitulo(array, i, dir);
+        }
+
+
+        private static void OrdenarMusicasDuracao(Musica[] array, int esq, int dir)
+        {
+            int i = esq, j = dir, pivo = array[(esq + dir) / 2].Duracao;
+
+            while (i <= j)
+            {
+                while (array[i].Duracao < pivo)
+                    i++;
+                while (array[j].Duracao > pivo)
+                    j--;
+                if (i <= j)
+                {
+                    Musica temp = array[i];
+                    array[i] = array[j];
+                    array[j] = temp;
+                    i++;
+                    j--;
+                }
+            }
+
+            if(esq < j)
+                OrdenarMusicasDuracao(array, esq, j);
+            if (i < dir)
+                OrdenarMusicasDuracao(array, i, dir);
         }
     }
 }
