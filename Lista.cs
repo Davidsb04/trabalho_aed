@@ -16,7 +16,7 @@ namespace PlayerMusical
 			ultimo = primeiro;
 		}
 
-		public void InserirInicio(int x)
+		public void InserirInicio(Musica x)
 		{
 			Celula tmp = new Celula(x);
 			tmp.Prox = primeiro.Prox;
@@ -29,7 +29,7 @@ namespace PlayerMusical
 			tmp = null;
 		}
 
-		public int RemoverFim()
+		public Musica RemoverFim()
 		{
 			if (primeiro == ultimo)
 			{
@@ -38,20 +38,20 @@ namespace PlayerMusical
 
 			Celula i;
 			for (i = primeiro; i.Prox != ultimo; i = i.Prox) ;
-			int elemento = ultimo.Elemento;
+			Musica elemento = ultimo.Elemento;
 			ultimo = i;
 			i.Prox = null;
 			i = null;
 			return elemento;
 		}
 
-		public void InserirFim(int x)
+		public void InserirFim(Musica x)
 		{
 			ultimo.Prox = new Celula(x);
 			ultimo = ultimo.Prox;
 		}
 
-		public void Inserir(int x, int pos)
+		public void Inserir(Musica x, int pos)
 		{
 			int tamanho = Tamanho();
 			if (pos < 0 || pos > tamanho)
@@ -79,9 +79,9 @@ namespace PlayerMusical
 			}
 		}
 
-		public int Remover(int pos)
+		public Musica Remover(int pos)
 		{
-			int elemento = 0;
+			Musica elemento = null;
 			int tamanho = Tamanho();
 			if (primeiro == ultimo || pos < 0 || pos > tamanho)
 			{
@@ -119,7 +119,7 @@ namespace PlayerMusical
 			return count;
 		}
 
-		public int RemoverInicio()
+		public Musica RemoverInicio()
 		{
 			if (primeiro == ultimo)
 			{
@@ -128,7 +128,7 @@ namespace PlayerMusical
 
 			Celula temp = primeiro;
 			primeiro = primeiro.Prox;
-			int elemento = primeiro.Elemento;
+			Musica elemento = primeiro.Elemento;
 			temp.Prox = null;
 			temp = null;
 			return elemento;
@@ -140,10 +140,48 @@ namespace PlayerMusical
 			Console.Write("[");
 			for (Celula i = primeiro.Prox; i != null; i = i.Prox)
 			{
-				Console.Write(i.Elemento + " ");
+				Console.WriteLine(i.Elemento.Titulo + "-" + i.Elemento.Artista);
 			}
 			Console.WriteLine("]");
 		}
+
+		public void MostrarUltimos10()
+		{
+			int tamanho = Tamanho();
+
+			if (tamanho == 0)
+			{
+				Console.WriteLine("Lista vazia");
+				return;
+			}
+
+			int pular = Math.Max(0, tamanho - 10);
+
+			Celula i = primeiro.Prox;
+
+			for (int j = 0; j < pular; j++)
+			{
+				i = i.Prox;
+			}
+
+			Console.WriteLine("Últimas 10 músicas:");
+
+			while (i != null)
+			{
+				Console.WriteLine(i.Elemento.Titulo + " - " + i.Elemento.Artista);
+				i = i.Prox;
+			}
+		}
+
+		public bool Vazio(){
+			if (primeiro == ultimo)
+			{
+				return true;
+			}
+
+			return false;
+		}
+
 
 	}
 }

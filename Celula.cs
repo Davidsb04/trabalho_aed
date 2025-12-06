@@ -8,10 +8,10 @@ namespace PlayerMusical
 {
 	class Celula
 	{
-		private int elemento;
+		private Musica elemento;
 		private Celula prox;
 
-		public Celula(int elemento)
+		public Celula(Musica elemento)
 		{
 			this.elemento = elemento;
 			this.prox = null;
@@ -19,7 +19,7 @@ namespace PlayerMusical
 
 		public Celula()
 		{
-			this.elemento = 0;
+			this.elemento = null;
 			this.prox = null;
 		}
 
@@ -29,7 +29,7 @@ namespace PlayerMusical
 			set { prox = value; }
 		}
 
-		public int Elemento
+		public Musica Elemento
 		{
 			get { return elemento; }
 			set { elemento = value; }

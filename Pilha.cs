@@ -15,7 +15,7 @@ namespace PlayerMusical
 			topo = null;
 		}
 
-		public void Inserir(int x)
+		public void Inserir(Musica x)
 		{
 			Celula tmp = new Celula(x);
 			tmp.Prox = topo;
@@ -23,13 +23,13 @@ namespace PlayerMusical
 			tmp = null;
 		}
 
-		public int Remover()
+		public Musica Remover()
 		{
 			if (topo == null)
 			{
 				throw new Exception("Erro");
 			}
-			int elemento = topo.Elemento;
+			Musica elemento = topo.Elemento;
 			Celula tmp = topo;
 			topo = topo.Prox;
 			tmp.Prox = null;

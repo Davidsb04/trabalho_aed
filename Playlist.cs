@@ -56,5 +56,10 @@ namespace PlayerMusical
         {
             playlist.MoverBaixo(musica);
         }
-    }
+
+		public void CarregarMusicaFila(Fila fila)
+		{
+			playlist.CarregarFila(fila);
+		}
+	}
 }

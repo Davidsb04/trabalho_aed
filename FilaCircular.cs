@@ -8,23 +8,23 @@ namespace PlayerMusical
 {
 	class Fila
 	{
-		private string[] array;
+		private Musica[] array;
 		private int primeiro;
 		private int ultimo;
 
 		public Fila(int tamanho)
 		{
-			array = new string[tamanho + 1];
+			array = new Musica[tamanho + 1];
 			primeiro = ultimo = 0;
 		}
 
 		public Fila()
 		{
-			array = new string[6];
+			array = new Musica[11];
 			primeiro = ultimo = 0;
 		}
 
-		public void Enqueue(string x)
+		public void Enqueue(Musica x)
 		{
 			if (((ultimo + 1) % array.Length) == primeiro) { throw new Exception("Erro"); }
 
@@ -33,11 +33,11 @@ namespace PlayerMusical
 
 		}
 
-		public string Dequeue()
+		public Musica Dequeue()
 		{
 			if (primeiro == ultimo) throw new Exception("Erro");
 
-			string resp = array[primeiro];
+			Musica resp = array[primeiro];
 
 			primeiro = (primeiro + 1) % array.Length;
 			return resp;
@@ -51,7 +51,7 @@ namespace PlayerMusical
 			return ultimo;
 		}
 
-		public string Peek()
+		public Musica Peek()
 		{
 			if (ultimo == 0) { throw new Exception("Fila vazia"); }
 			return array[primeiro];
@@ -60,13 +60,21 @@ namespace PlayerMusical
 		public void ForEach()
 		{
 			int i = primeiro;
-			Console.Write("[");
+			Console.WriteLine("=== Fila de Reprodução ===");
 			while (i != ultimo)
 			{
-				Console.Write(array[i] + " ");
+				Console.WriteLine($"{array[i].Titulo} - {array[i].Artista}");
 				i = (i + 1) % array.Length;
 			}
-			Console.WriteLine("]");
+			Console.WriteLine("==========================");
+		}
+
+		public bool IsEmpty(){
+			 if (primeiro == ultimo) {
+				return true;
+			} else {
+				return false;
+			} 
 		}
 
 

@@ -1,6 +1,7 @@
 ﻿
 using System.Numerics;
 using System.Text;
+using System.Diagnostics;
 
 namespace PlayerMusical
 {
@@ -8,8 +9,11 @@ namespace PlayerMusical
     {
         public static Dictionary<string, Musica> Catalogo = new Dictionary<string, Musica>();
         public static List<Playlist> ListaPlaylists = new List<Playlist>();
+        public static Fila FilaReproducao = new Fila();
         public static ArvoreBinaria ArvoreGeneros = new ArvoreBinaria();
         public static Musica[] MusicaParaBusca = new Musica[Catalogo.Count];
+        public static Stopwatch Stopwatch = new Stopwatch();
+        public static Lista ListaHistorico = new Lista();
 
         public static void InicialiazarDadosCSV()
         {
@@ -77,21 +81,79 @@ namespace PlayerMusical
             return ListaPlaylists.FirstOrDefault(p => p.Nome == nomePlaylist);
         }
 
-
-        public static void ExibirPlaylists()
-        {
-            if (ListaPlaylists.Count == 0)
-                Console.WriteLine("Nenhuma playlist encontrada.");
-            else
-            {
-                foreach (Playlist item in ListaPlaylists)
-                {
-                    Console.WriteLine(item.Nome);
-                }
-            }
+        public static void ImprimirHistorico(){
+            ListaHistorico.MostrarUltimos10();
         }
 
-        public static void InserirMusicaPlaylist(string nomePlaylist, string nomeMusica)
+        public static void AdicionarMusicaFila(Musica nomeMusica){
+            FilaReproducao.Enqueue(nomeMusica);
+        }
+
+        public static void ReproduzirProxima() {
+            if (FilaReproducao.IsEmpty())
+            {
+				Console.WriteLine("A fila está vazia!");
+				return;
+			}
+
+			Musica atual = FilaReproducao.Dequeue();
+            ListaHistorico.InserirFim(atual);
+
+			int duracaoSeg = atual.Duracao;
+			int duracaoMs = duracaoSeg * 1000;
+
+			Console.WriteLine($"Tocando: {atual.Titulo} - {atual.Artista}");
+			Console.WriteLine($"Duração: {duracaoSeg} segundos");
+		}
+
+        public static void ExibirFila(){
+            FilaReproducao.ForEach();
+        }
+
+		public static void VoltarMusica()
+		{
+			if (ListaHistorico.Tamanho() == 0)
+			{
+				Console.WriteLine("Nenhuma música no histórico.");
+				return;
+			}
+
+			Musica musica = ListaHistorico.RemoverFim();
+
+			Console.WriteLine($"Voltando para: {musica.Titulo} - {musica.Artista}");
+
+			FilaReproducao.Enqueue(musica);
+		}
+
+
+		public static void CarregarPlaylist(string nomePlaylist){
+            Playlist playlist = RetornarPlaylist(nomePlaylist);
+
+			if (playlist == null)
+			{
+				Console.WriteLine("Playlist não encontrada.");
+				return;
+			}
+
+			playlist.CarregarMusicaFila(FilaReproducao);
+			Console.WriteLine($"Playlist '{nomePlaylist}' carregada na fila");
+
+		}
+
+		public static void ExibirPlaylists()
+		{
+			if (ListaPlaylists.Count == 0)
+				Console.WriteLine("Nenhuma playlist encontrada.");
+			else
+			{
+				foreach (Playlist item in ListaPlaylists)
+				{
+					Console.WriteLine(item.Nome);
+				}
+			}
+		}
+
+		public static void InserirMusicaPlaylist(string nomePlaylist, string nomeMusica)
         {
             if (BuscarMusica(nomeMusica, out Musica musica))
             {

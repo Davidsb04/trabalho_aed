@@ -1,6 +1,6 @@
 ﻿namespace PlayerMusical
 {
-    internal class Musica
+    class Musica
     {        
         public string Titulo { get; set; }
         public string Artista { get; set; }

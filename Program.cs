@@ -170,7 +170,7 @@ namespace PlayerMusical
 
 			while (loop)
 			{
-				Console.Clear();
+				//Console.Clear();
 				Console.WriteLine("===== REPRODUÇÃO =====");
 				Console.WriteLine("1 - Selecionar Playlist para Reproduzir");
 				Console.WriteLine("2 - Ver Fila de Reprodução");
@@ -179,9 +179,38 @@ namespace PlayerMusical
 				Console.WriteLine("0 - Voltar");
 				Console.Write("Opção: ");
 
-				string opcao = Console.ReadLine();
+				int opcao = int.Parse(Console.ReadLine());
 
-				if (opcao == "0") loop = false;
+				switch (opcao)
+				{
+					case 1:
+						Console.Write("Digite o nome da playlist: ");
+						string nomePlaylist = Console.ReadLine();
+						Dados.CarregarPlaylist(nomePlaylist);
+						break;
+
+					case 2:
+						Dados.ExibirFila();
+						break;
+					case 3:
+						Dados.ReproduzirProxima();
+						break;
+					case 4:
+						Console.Write("Digite o nome da música: ");
+						string musicaBusca = Console.ReadLine();
+
+						if (Dados.BuscarMusica(musicaBusca, out Musica musica)){
+							Dados.AdicionarMusicaFila(musica);
+						}
+						else {
+							Console.WriteLine("Nenhuma referência encontrada.");
+						}
+							
+						break;
+					case 0:
+						loop = false;
+						break;
+				}
 			}
 		}
 
@@ -191,16 +220,26 @@ namespace PlayerMusical
 
 			while (loop)
 			{
-				Console.Clear();
 				Console.WriteLine("===== HISTÓRICO =====");
 				Console.WriteLine("1 - Exibir Últimas Músicas Tocadas");
 				Console.WriteLine("2 - Voltar uma Música");
 				Console.WriteLine("0 - Voltar");
 				Console.Write("Opção: ");
 
-				string opcao = Console.ReadLine();
+				int opcao = int.Parse(Console.ReadLine());
 
-				if (opcao == "0") loop = false;
+				switch (opcao)
+				{
+					case 1:
+						Dados.ImprimirHistorico();
+						break;
+					case 2:
+						Dados.VoltarMusica();
+						break;
+					case 0:
+						loop = false;
+						break;
+				}
 			}
 		}
 

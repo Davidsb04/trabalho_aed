@@ -211,6 +211,18 @@ namespace PlayerMusical
 			return musica;
 		}
 
+		public void CarregarFila(Fila fila){
+			if (primeiro == ultimo)
+			{
+				throw new Exception("Playlist vazia!");
+			}
+
+			for (CelulaDupla i = primeiro.Prox; i != null; i = i.Prox)
+			{
+				fila.Enqueue(i.Musica);
+			}
+		}
+
 		public int Tamanho()
 		{
 			int count = 0;
