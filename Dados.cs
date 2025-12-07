@@ -5,100 +5,116 @@ using System.Diagnostics;
 
 namespace PlayerMusical
 {
-    static class Dados
-    {
-        public static Dictionary<string, Musica> Catalogo = new Dictionary<string, Musica>();
-        public static List<Playlist> ListaPlaylists = new List<Playlist>();
-        public static Fila FilaReproducao = new Fila();
-        public static ArvoreBinaria ArvoreGeneros = new ArvoreBinaria();
-        public static Musica[] MusicaParaBusca = new Musica[Catalogo.Count];
-        public static Stopwatch Stopwatch = new Stopwatch();
-        public static Lista ListaHistorico = new Lista();
+	static class Dados
+	{
+		public static Dictionary<string, Musica> Catalogo = new Dictionary<string, Musica>();
+		public static List<Playlist> ListaPlaylists = new List<Playlist>();
+		public static Fila FilaReproducao = new Fila();
+		public static ArvoreBinaria ArvoreGeneros = new ArvoreBinaria();
+		public static Musica[] MusicaParaBusca = new Musica[Catalogo.Count];
+		public static Stopwatch Stopwatch = new Stopwatch();
+		public static Lista ListaHistorico = new Lista();
 
-        public static void InicialiazarDadosCSV()
-        {
-            string linha;
+		public static void InicialiazarDadosCSV()
+		{
+			string linha;
 
-            try
-            {
-                StreamReader arq = new StreamReader("músicas.csv", Encoding.Latin1);
+			try
+			{
+				using (StreamReader arq = new StreamReader("músicas.csv", Encoding.Latin1))
+				{
+					linha = arq.ReadLine();
 
-                linha = arq.ReadLine();
+					while (linha != null)
+					{
+						linha = arq.ReadLine();
+						linha = linha.Replace("\"", "");
+						string[] coluna = linha.Split(';');
+						Musica musica = new Musica(coluna[0], coluna[1], coluna[2], int.Parse(coluna[3]));
+						Catalogo.Add(musica.Chave, musica);
 
-                while (linha != null)
-                {
-                    linha = arq.ReadLine();
-                    linha = linha.Replace("\"", "");
-                    string[] coluna = linha.Split(';');
-                    Musica musica = new Musica(coluna[0], coluna[1], coluna[2], int.Parse(coluna[3]));
-                    Catalogo.Add(musica.Chave, musica);
+						linha = arq.ReadLine();
+					}
 
-                    linha = arq.ReadLine();
-                }
+					arq.Close();
+				}
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("Exception: " + e.Message);
+			}
+		}
 
-                arq.Close();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Exception: " + e.Message);
-            }
-        }
+		public static void ExibirCatalogo()
+		{
+			foreach (string chave in Catalogo.Keys)
+				Console.WriteLine(chave);
+		}
 
-        public static void ExibirCatalogo()
-        {
-            foreach (string chave in Catalogo.Keys)
-                Console.WriteLine(chave);
-        }
+		public static bool BuscarMusica(string chave, out Musica musica)
+		{
+			if (Catalogo.TryGetValue(chave, out musica))
+				return true;
+			return false;
+		}
 
-        public static bool BuscarMusica(string chave, out Musica musica)
-        {
-            if (Catalogo.TryGetValue(chave, out musica))
-                return true;
-            return false;
-        }
+		public static void CriarPlaylist(string nomePlaylist)
+		{
+			if (!BuscarPlaylist(nomePlaylist))
+			{
+				Playlist playlist = new Playlist(nomePlaylist);
 
-        public static void CriarPlaylist(string nomePlaylist)
-        {
-            if (!BuscarPlaylist(nomePlaylist))
-            {
-                Playlist playlist = new Playlist(nomePlaylist);
+				ListaPlaylists.Add(playlist);
+				Logger.Registrar($"{playlist.Nome} criada com sucesso");
+			}
+			else
+				Console.WriteLine("Essa playlist já existe.");
+		}
 
-                ListaPlaylists.Add(playlist);
-            }
-            else
-                Console.WriteLine("Essa playlist já existe.");
-        }
+		public static bool BuscarPlaylist(string nomePlaylist)
+		{
+			if (ListaPlaylists.Any(p => p.Nome == nomePlaylist))
+				return true;
+			return false;
+		}
 
-        public static bool BuscarPlaylist(string nomePlaylist)
-        {
-            if (ListaPlaylists.Any(p => p.Nome == nomePlaylist))
-                return true;
-            return false;
-        }
+		public static Playlist RetornarPlaylist(string nomePlaylist)
+		{
+			return ListaPlaylists.FirstOrDefault(p => p.Nome == nomePlaylist);
+		}
 
-        public static Playlist RetornarPlaylist(string nomePlaylist)
-        {
-            return ListaPlaylists.FirstOrDefault(p => p.Nome == nomePlaylist);
-        }
+		public static void ImprimirHistorico()
+		{
+			ListaHistorico.MostrarUltimos10();
+		}
 
-        public static void ImprimirHistorico(){
-            ListaHistorico.MostrarUltimos10();
-        }
+		public static void AdicionarMusicaFila(Musica nomeMusica)
+		{
+			FilaReproducao.Enqueue(nomeMusica);
+			Logger.Registrar($"Música {nomeMusica.Titulo} - {nomeMusica.Artista} adicionada na fila de reprodução");
+		}
 
-        public static void AdicionarMusicaFila(Musica nomeMusica){
-            FilaReproducao.Enqueue(nomeMusica);
-        }
+		public static void ReproduzirMusica(Musica nomeMusica)
+		{
+			Logger.Registrar($"Música {nomeMusica.Titulo} - {nomeMusica.Artista} está sendo reproduzida");
+			int duracaoSeg = nomeMusica.Duracao;
+			int duracaoMs = duracaoSeg * 1000;
 
-        public static void ReproduzirProxima() {
-            if (FilaReproducao.IsEmpty())
-            {
+			Console.WriteLine($"Tocando: {nomeMusica.Titulo} - {nomeMusica.Artista}");
+			Console.WriteLine($"Duração: {duracaoSeg} segundos");
+		}
+
+		public static void ReproduzirProxima()
+		{
+			if (FilaReproducao.IsEmpty())
+			{
 				Console.WriteLine("A fila está vazia!");
 				return;
 			}
 
 			Musica atual = FilaReproducao.Dequeue();
-            ListaHistorico.InserirFim(atual);
-
+			ListaHistorico.InserirFim(atual);
+			Logger.Registrar($"Música {atual.Titulo} - {atual.Artista} está sendo reproduzida");
 			int duracaoSeg = atual.Duracao;
 			int duracaoMs = duracaoSeg * 1000;
 
@@ -106,9 +122,10 @@ namespace PlayerMusical
 			Console.WriteLine($"Duração: {duracaoSeg} segundos");
 		}
 
-        public static void ExibirFila(){
-            FilaReproducao.ForEach();
-        }
+		public static void ExibirFila()
+		{
+			FilaReproducao.ForEach();
+		}
 
 		public static void VoltarMusica()
 		{
@@ -126,8 +143,9 @@ namespace PlayerMusical
 		}
 
 
-		public static void CarregarPlaylist(string nomePlaylist){
-            Playlist playlist = RetornarPlaylist(nomePlaylist);
+		public static void CarregarPlaylist(string nomePlaylist)
+		{
+			Playlist playlist = RetornarPlaylist(nomePlaylist);
 
 			if (playlist == null)
 			{
@@ -137,6 +155,7 @@ namespace PlayerMusical
 
 			playlist.CarregarMusicaFila(FilaReproducao);
 			Console.WriteLine($"Playlist '{nomePlaylist}' carregada na fila");
+			Logger.Registrar($"{playlist.Nome} carregada com sucesso");
 
 		}
 
@@ -154,173 +173,173 @@ namespace PlayerMusical
 		}
 
 		public static void InserirMusicaPlaylist(string nomePlaylist, string nomeMusica)
-        {
-            if (BuscarMusica(nomeMusica, out Musica musica))
-            {
-                Playlist playlistSelecionada = RetornarPlaylist(nomePlaylist);
-                if (playlistSelecionada != null)
-                    playlistSelecionada.InserirMusica(musica);
-                else
-                {
-                    Console.WriteLine("Essa playlist não existe.");
-                    return;
-                }
-                Console.WriteLine("Música inserida com sucesso.");
-            }
-            else
-            {
-                Console.WriteLine("Música não encontrada.");
-            }
-        }
+		{
+			if (BuscarMusica(nomeMusica, out Musica musica))
+			{
+				Playlist playlistSelecionada = RetornarPlaylist(nomePlaylist);
+				if (playlistSelecionada != null)
+					playlistSelecionada.InserirMusica(musica);
+				else
+				{
+					Console.WriteLine("Essa playlist não existe.");
+					return;
+				}
+				Console.WriteLine("Música inserida com sucesso.");
+			}
+			else
+			{
+				Console.WriteLine("Música não encontrada.");
+			}
+		}
 
-        public static void ExibirMusicasPlaylist(string nomePlaylist)
-        {
-            Playlist playlist = RetornarPlaylist(nomePlaylist);
-            playlist.ExibirMusicas();
-        }
+		public static void ExibirMusicasPlaylist(string nomePlaylist)
+		{
+			Playlist playlist = RetornarPlaylist(nomePlaylist);
+			playlist.ExibirMusicas();
+		}
 
-        public static void RemoverMusicaPlaylist(string nomePlaylist, string nomeMusica)
-        {
-            if (BuscarMusica(nomeMusica, out Musica musica))
-            {
-                Playlist playlist = ListaPlaylists.FirstOrDefault(p => p.Nome == nomePlaylist);
-                playlist.RemoverMusica(musica);
+		public static void RemoverMusicaPlaylist(string nomePlaylist, string nomeMusica)
+		{
+			if (BuscarMusica(nomeMusica, out Musica musica))
+			{
+				Playlist playlist = ListaPlaylists.FirstOrDefault(p => p.Nome == nomePlaylist);
+				playlist.RemoverMusica(musica);
+				Logger.Registrar($"{musica.Titulo} - {musica.Artista} removida da playlist com sucesso");
+				Console.WriteLine("Música removida com sucesso.");
+			}
+			else
+				Console.WriteLine("Música não encontrada.");
+		}
 
-                Console.WriteLine("Música removida com sucesso.");
-            }
-            else
-                Console.WriteLine("Música não encontrada.");
-        }
+		public static bool BuscarMusicaPlaylist(string nomePlaylist, string nomeMusica)
+		{
+			if (BuscarMusica(nomeMusica, out Musica musica))
+			{
+				Playlist playlist = ListaPlaylists.FirstOrDefault(p => p.Nome == nomePlaylist);
+				return playlist.BuscarMusica(nomeMusica);
+			}
+			return false;
+		}
 
-        public static bool BuscarMusicaPlaylist(string nomePlaylist, string nomeMusica)
-        {
-            if (BuscarMusica(nomeMusica, out Musica musica))
-            {
-                Playlist playlist = ListaPlaylists.FirstOrDefault(p => p.Nome == nomePlaylist);
-                return playlist.BuscarMusica(nomeMusica);
-            }
-            return false;
-        }
+		public static void MoverMusicaPlaylist(string nomePlaylist, string nomeMusica, string direcao)
+		{
+			if (BuscarMusica(nomeMusica, out Musica musica))
+			{
+				Playlist playlist = ListaPlaylists.FirstOrDefault(p => p.Nome == nomePlaylist);
+				if (direcao == "Cima")
+				{
+					playlist.MoverMusicaCima(musica);
+				}
+				else
+				{
+					playlist.MoverMusicaBaixo(musica);
+				}
+			}
+			else
+			{
+				Console.WriteLine("Música não encontrada.");
+			}
+		}
 
-        public static void MoverMusicaPlaylist(string nomePlaylist, string nomeMusica, string direcao)
-        {
-            if (BuscarMusica(nomeMusica, out Musica musica))
-            {
-                Playlist playlist = ListaPlaylists.FirstOrDefault(p => p.Nome == nomePlaylist);
-                if (direcao == "Cima")
-                {
-                    playlist.MoverMusicaCima(musica);
-                }
-                else
-                {
-                    playlist.MoverMusicaBaixo(musica);
-                }
-            }
-            else
-            {
-                Console.WriteLine("Música não encontrada.");
-            }
-        }
+		public static void PesquisarPorGenero(string genero)
+		{
+			List<Musica> musicasPorGenero = ArvoreGeneros.Pesquisar(genero);
 
-        public static void PesquisarPorGenero(string genero)
-        {
-            List<Musica> musicasPorGenero = ArvoreGeneros.Pesquisar(genero);
+			foreach (Musica musica in musicasPorGenero)
+			{
+				Console.WriteLine($"{musica.Titulo} - {musica.Artista}");
+			}
+		}
 
-            foreach (Musica musica in musicasPorGenero)
-            {
-                Console.WriteLine($"{musica.Titulo} - {musica.Artista}");
-            }
-        }
+		public static void InserirMusicasArvore()
+		{
+			foreach (var musica in Catalogo.Values)
+			{
+				ArvoreGeneros.Inserir(musica);
+			}
+		}
+		public static void PreencherVetorMusicas()
+		{
+			MusicaParaBusca = Catalogo.Values.ToArray();
+		}
 
-        public static void InserirMusicasArvore()
-        {
-            foreach (var musica in Catalogo.Values)
-            {
-                ArvoreGeneros.Inserir(musica);
-            }
-        }
-        public static void PreencherVetorMusicas()
-        {
-            MusicaParaBusca = Catalogo.Values.ToArray();
-        }
+		public static void OrdenarMusica(string parametro)
+		{
+			if (parametro == "Duracao")
+			{
+				OrdenarMusicasDuracao(MusicaParaBusca, 0, MusicaParaBusca.Length - 1);
+				foreach (Musica musica in MusicaParaBusca)
+				{
+					Console.WriteLine($"{musica.Titulo} - {musica.Artista} - {musica.Duracao}");
+				}
+			}
+			else
+			{
+				OrdenarMusicasTitulo(MusicaParaBusca, 0, MusicaParaBusca.Length - 1);
+				foreach (Musica musica in MusicaParaBusca)
+				{
+					Console.WriteLine($"{musica.Titulo} - {musica.Artista}");
+				}
 
-        public static void OrdenarMusica(string parametro)
-        {
-            if (parametro == "Duracao")
-            {
-                OrdenarMusicasDuracao(MusicaParaBusca, 0, MusicaParaBusca.Length - 1);
-                foreach (Musica musica in MusicaParaBusca)
-                {
-                    Console.WriteLine($"{musica.Titulo} - {musica.Artista} - {musica.Duracao}");
-                }
-            }
-            else
-            {
-                OrdenarMusicasTitulo(MusicaParaBusca, 0, MusicaParaBusca.Length - 1);
-                foreach (Musica musica in MusicaParaBusca)
-                {
-                    Console.WriteLine($"{musica.Titulo} - {musica.Artista}");
-                }
+			}
+		}
 
-            }
-        }
+		private static void OrdenarMusicasTitulo(Musica[] array, int esq, int dir)
+		{
+			int i = esq, j = dir;
+			string pivo = array[(esq + dir) / 2].Titulo;
 
-        private static void OrdenarMusicasTitulo(Musica[] array, int esq, int dir)
-        {
-            int i = esq, j = dir;
-            string pivo = array[(esq + dir) / 2].Titulo;
+			while (i <= j)
+			{
+				while (array[i].Titulo.CompareTo(pivo) < 0)
+					i++;
 
-            while (i <= j)
-            {
-                while (array[i].Titulo.CompareTo(pivo) < 0)
-                    i++;
+				while (array[j].Titulo.CompareTo(pivo) > 0)
+					j--;
 
-                while (array[j].Titulo.CompareTo(pivo) > 0)
-                    j--;
+				if (i <= j)
+				{
+					Musica temp = array[i];
+					array[i] = array[j];
+					array[j] = temp;
 
-                if (i <= j)
-                {
-                    Musica temp = array[i];
-                    array[i] = array[j];
-                    array[j] = temp;
+					i++;
+					j--;
+				}
+			}
 
-                    i++;
-                    j--;
-                }
-            }
+			if (esq < j)
+				OrdenarMusicasTitulo(array, esq, j);
 
-            if (esq < j)
-                OrdenarMusicasTitulo(array, esq, j);
-
-            if (i < dir)
-                OrdenarMusicasTitulo(array, i, dir);
-        }
+			if (i < dir)
+				OrdenarMusicasTitulo(array, i, dir);
+		}
 
 
-        private static void OrdenarMusicasDuracao(Musica[] array, int esq, int dir)
-        {
-            int i = esq, j = dir, pivo = array[(esq + dir) / 2].Duracao;
+		private static void OrdenarMusicasDuracao(Musica[] array, int esq, int dir)
+		{
+			int i = esq, j = dir, pivo = array[(esq + dir) / 2].Duracao;
 
-            while (i <= j)
-            {
-                while (array[i].Duracao < pivo)
-                    i++;
-                while (array[j].Duracao > pivo)
-                    j--;
-                if (i <= j)
-                {
-                    Musica temp = array[i];
-                    array[i] = array[j];
-                    array[j] = temp;
-                    i++;
-                    j--;
-                }
-            }
+			while (i <= j)
+			{
+				while (array[i].Duracao < pivo)
+					i++;
+				while (array[j].Duracao > pivo)
+					j--;
+				if (i <= j)
+				{
+					Musica temp = array[i];
+					array[i] = array[j];
+					array[j] = temp;
+					i++;
+					j--;
+				}
+			}
 
-            if(esq < j)
-                OrdenarMusicasDuracao(array, esq, j);
-            if (i < dir)
-                OrdenarMusicasDuracao(array, i, dir);
-        }
-    }
+			if (esq < j)
+				OrdenarMusicasDuracao(array, esq, j);
+			if (i < dir)
+				OrdenarMusicasDuracao(array, i, dir);
+		}
+	}
 }

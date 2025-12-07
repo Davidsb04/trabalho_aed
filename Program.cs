@@ -17,7 +17,6 @@ namespace PlayerMusical
 
 			while (executando)
 			{
-				//Console.Clear();
 				Console.WriteLine("===== MENU PRINCIPAL =====");
 				Console.WriteLine("1 - Gerenciar Catálogo");
 				Console.WriteLine("2 - Gerenciar Playlists");
@@ -64,7 +63,6 @@ namespace PlayerMusical
 
 			while (loop)
 			{
-				//Console.Clear();
 				Console.WriteLine("===== GERENCIAR CATÁLOGO =====");
 				Console.WriteLine("1 - Exibir Catálogo");
 				Console.WriteLine("2 - Buscar Música");
@@ -170,7 +168,6 @@ namespace PlayerMusical
 
 			while (loop)
 			{
-				//Console.Clear();
 				Console.WriteLine("===== REPRODUÇÃO =====");
 				Console.WriteLine("1 - Selecionar Playlist para Reproduzir");
 				Console.WriteLine("2 - Ver Fila de Reprodução");
@@ -260,7 +257,7 @@ namespace PlayerMusical
 				switch (opcao)
 				{
 					case 1:
-
+						Dados.ReproduzirMusica(musica);
 						break;
 					case 2:
 						Console.Write("Digite o nome da playlist: ");
